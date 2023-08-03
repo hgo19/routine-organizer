@@ -8,7 +8,7 @@ module.exports = {
         "standard-with-typescript",
         "plugin:@typescript-eslint/recommended"
     ],
-    ignorePatterns: ['dist', '.eslintrc.cjs'],
+    ignorePatterns: ['dist', '.eslintrc.cjs', '*.config.cjs'],
     overrides: [
         {
             env: {
