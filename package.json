@@ -1,0 +1,17 @@
+{
+  "name": "routine-organizer-app",
+  "version": "1.0.0",
+  "description": "This app should help with your routine. The focus of this application is to help people organize their routines for each day of each month. It was developed to help everyone who feels a little too much in their lives.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "git-commit-msg-linter": "^5.0.4",
+    "i": "^0.3.7",
+    "npm": "^9.8.1"
+  }
+}
