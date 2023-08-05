@@ -1,9 +1,24 @@
-import { SignUpController, type SignUpRequest } from './signup'
+import { AddAccountUseCase } from '../../../domain/usecases/add-account'
+import { type AccountInput, type AccountModel } from '../../../domain/usecases/add-account-protocols'
+import { SignUpController } from './signup'
 
 describe('SignUp Controller', () => {
   test('should return 400 if a property is missing', async () => {
     // System under test
-    const sut = new SignUpController()
+    class AddAccountUseCaseStub extends AddAccountUseCase {
+      async add (account: AccountInput): Promise<AccountModel> {
+        const fakeAccount = {
+          id: 'valid_id',
+          name: account.name,
+          email: account.email,
+          password: 'hashed_password'
+        }
+
+        return await new Promise(resolve => { resolve(fakeAccount) })
+      }
+    }
+    const addAccountUseCase = new AddAccountUseCaseStub()
+    const sut = new SignUpController(addAccountUseCase)
     const bodyMissingProperties = [
       {
         email: 'any_email',
@@ -27,12 +42,40 @@ describe('SignUp Controller', () => {
       }
     ]
 
-    const promises = bodyMissingProperties.map(async (bodyReq: Partial<SignUpRequest>) => {
+    const promises = bodyMissingProperties.map(async (bodyReq: Partial<AccountInput>) => {
       const httpResponse = await sut.execute(bodyReq)
       expect(httpResponse.statusCode).toBe(400)
     })
 
     // Use Promise.all to wait for all promises to resolve
     await Promise.all(promises)
+  })
+
+  test('should ensure AddAccountUseCase was called with the right values', async () => {
+    // System under test
+    class AddAccountUseCaseStub extends AddAccountUseCase {
+      async add (account: AccountInput): Promise<AccountModel> {
+        const fakeAccount = {
+          id: 'valid_id',
+          name: account.name,
+          email: account.email,
+          password: 'hashed_password'
+        }
+
+        return await new Promise(resolve => { resolve(fakeAccount) })
+      }
+    }
+    const addAccountUseCase = new AddAccountUseCaseStub()
+    const sut = new SignUpController(addAccountUseCase)
+    const addSpy = jest.spyOn(addAccountUseCase, 'add')
+    const bodyRequest = {
+      name: 'valid_name',
+      email: 'valid_email@email.com',
+      password: 'valid_password',
+      passwordConfirmation: 'valid_confirmation'
+    }
+
+    await sut.execute(bodyRequest)
+    expect(addSpy).toHaveBeenCalledWith(bodyRequest)
   })
 })
