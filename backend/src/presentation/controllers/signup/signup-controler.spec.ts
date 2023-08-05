@@ -1,3 +1,4 @@
+import { UserAccount } from '../../../domain/entities/UserAccount'
 import { AddAccountUseCase } from '../../../domain/usecases/add-account'
 import { type AccountInput, type AccountModel } from '../../../domain/usecases/add-account-protocols'
 import { SignUpController } from './signup'
@@ -20,7 +21,8 @@ const makeSut = (): SutTypes => {
       return await new Promise(resolve => { resolve(fakeAccount) })
     }
   }
-  const addAccountUseCase = new AddAccountUseCaseStub()
+  const userEntity = new UserAccount()
+  const addAccountUseCase = new AddAccountUseCaseStub(userEntity)
   const sut = new SignUpController(addAccountUseCase)
 
   return {
