@@ -1,6 +1,5 @@
 import { type AddAccountUseCase } from '../../../domain/usecases/add-account'
-import { type AccountInput } from '../../../domain/usecases/add-account-protocols'
-import { type HttpResponse, type IController } from '../../protocols'
+import { type HttpResponse, type IController, type AccountInput } from './signup-protocols'
 
 export class SignUpController implements IController<AccountInput> {
   private readonly _useCase
