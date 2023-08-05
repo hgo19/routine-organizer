@@ -1,4 +1,4 @@
-import { type HttpResponse, type IController } from '../protocols'
+import { type HttpResponse, type IController } from '../../protocols'
 
 export interface SignUpRequest {
   name: string
