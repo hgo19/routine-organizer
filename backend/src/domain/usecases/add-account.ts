@@ -1,7 +1,5 @@
 import { type UserAccount } from '../entities/UserAccount'
-import { type AddAccountRepository } from '../protocols/add-account-repository'
-import { type Encrypter } from '../protocols/encrypter'
-import { type AccountInput, type AccountModel } from './add-account-protocols'
+import { type AccountInput, type AccountModel, type Encrypter, type AddAccountRepository } from '../protocols'
 
 export class AddAccountUseCase {
   private readonly userEntity

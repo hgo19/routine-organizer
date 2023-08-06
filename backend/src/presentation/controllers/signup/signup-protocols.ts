@@ -1,2 +1,2 @@
 export * from '../../protocols'
-export * from '../../../domain/usecases/add-account-protocols'
+export * from '../../../domain/protocols/'

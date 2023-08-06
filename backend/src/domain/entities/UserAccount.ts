@@ -1,5 +1,5 @@
 import { InvalidParamsError } from '../exceptions/invalid-params'
-import { type AccountInput } from '../usecases/add-account-protocols'
+import { type AccountInput } from '../protocols'
 
 export class UserAccount {
   private _name: string

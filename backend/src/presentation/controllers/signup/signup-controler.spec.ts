@@ -1,8 +1,6 @@
 import { UserAccount } from '../../../domain/entities/UserAccount'
-import { type AddAccountRepository } from '../../../domain/protocols/add-account-repository'
-import { type Encrypter } from '../../../domain/protocols/encrypter'
 import { AddAccountUseCase } from '../../../domain/usecases/add-account'
-import { type AccountBasic, type AccountInput, type AccountModel } from '../../../domain/usecases/add-account-protocols'
+import { type AccountBasic, type AccountInput, type AccountModel, type Encrypter, type AddAccountRepository } from '../../../domain/protocols'
 import { SignUpController } from './signup'
 
 interface SutTypes {

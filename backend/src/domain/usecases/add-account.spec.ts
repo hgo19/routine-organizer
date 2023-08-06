@@ -1,8 +1,6 @@
 import { UserAccount } from '../entities/UserAccount'
 import { AddAccountUseCase } from './add-account'
-import { type Encrypter } from '../protocols/encrypter'
-import { type AccountBasic, type AccountModel } from './add-account-protocols'
-import { type AddAccountRepository } from '../protocols/add-account-repository'
+import { type AccountModel, type Encrypter, type AddAccountRepository, type AccountBasic } from '../protocols'
 
 const makeEntityStub = (): UserAccount => {
   class UserEntityStub extends UserAccount {
