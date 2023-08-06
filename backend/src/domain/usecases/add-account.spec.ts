@@ -1,7 +1,8 @@
 import { UserAccount } from '../entities/UserAccount'
 import { AddAccountUseCase } from './add-account'
-import { type AccountInput } from './add-account-protocols'
 import { type Encrypter } from '../protocols/encrypter'
+import { type AccountBasic, type AccountModel } from './add-account-protocols'
+import { type AddAccountRepository } from '../protocols/add-account-repository'
 
 const makeEntityStub = (): UserAccount => {
   class UserEntityStub extends UserAccount {
@@ -23,21 +24,39 @@ const makeEncrypterStub = (): Encrypter => {
   return new EncrypterStub()
 }
 
+const makeRepositoryStub = (): AddAccountRepository => {
+  class AddAccountRepositoryStub implements AddAccountRepository {
+    async create (account: AccountBasic): Promise<AccountModel> {
+      return {
+        id: 'valid_id',
+        name: 'valid_name',
+        email: 'valid_email',
+        password: 'hashed_password'
+      }
+    }
+  }
+
+  return new AddAccountRepositoryStub()
+}
+
 interface SutTypes {
   sut: AddAccountUseCase
   userEntity: UserAccount
   encrypter: Encrypter
+  accountRepository: AddAccountRepository
 }
 
 const makeSut = (): SutTypes => {
   const userEntity = makeEntityStub()
   const encrypter = makeEncrypterStub()
-  const sut = new AddAccountUseCase(userEntity, encrypter)
+  const accountRepository = makeRepositoryStub()
+  const sut = new AddAccountUseCase(userEntity, encrypter, accountRepository)
 
   return {
     sut,
     userEntity,
-    encrypter
+    encrypter,
+    accountRepository
   }
 }
 
@@ -83,5 +102,23 @@ describe('', () => {
     }
     await sut.add(accountInput)
     expect(encryptSpyt).toHaveBeenCalledWith(accountInput.password)
+  })
+
+  test('should calls the Repository with the right values', async () => {
+    // System under test
+    const { sut, accountRepository } = makeSut()
+    const createRepositorySpy = jest.spyOn(accountRepository, 'create')
+    const accountInput = {
+      name: 'valid_name',
+      email: 'valid_email',
+      password: 'valid_password',
+      passwordConfirmation: 'invalid_password'
+    }
+    await sut.add(accountInput)
+    expect(createRepositorySpy).toHaveBeenCalledWith({
+      name: 'valid_name',
+      email: 'valid_email',
+      password: 'hashed_password'
+    })
   })
 })
