@@ -121,4 +121,22 @@ describe('', () => {
       password: 'hashed_password'
     })
   })
+
+  test('should returns the created Account correctly', async () => {
+    // System under test
+    const { sut } = makeSut()
+    const accountInput = {
+      name: 'valid_name',
+      email: 'valid_email',
+      password: 'valid_password',
+      passwordConfirmation: 'invalid_password'
+    }
+    const createdAccount = await sut.add(accountInput)
+    expect(createdAccount).toEqual({
+      id: 'valid_id',
+      name: 'valid_name',
+      email: 'valid_email',
+      password: 'hashed_password'
+    })
+  })
 })
