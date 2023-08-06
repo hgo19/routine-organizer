@@ -1,7 +1,8 @@
 import { UserAccount } from '../../../domain/entities/UserAccount'
+import { type AddAccountRepository } from '../../../domain/protocols/add-account-repository'
 import { type Encrypter } from '../../../domain/protocols/encrypter'
 import { AddAccountUseCase } from '../../../domain/usecases/add-account'
-import { type AccountInput, type AccountModel } from '../../../domain/usecases/add-account-protocols'
+import { type AccountBasic, type AccountInput, type AccountModel } from '../../../domain/usecases/add-account-protocols'
 import { SignUpController } from './signup'
 
 interface SutTypes {
@@ -19,6 +20,21 @@ const makeEncrypterStub = (): Encrypter => {
   return new EncrypterStub()
 }
 
+const makeRepositoryStub = (): AddAccountRepository => {
+  class AddAccountRepositoryStub implements AddAccountRepository {
+    async create (account: AccountBasic): Promise<AccountModel> {
+      return {
+        id: 'valid_id',
+        name: 'valid_name',
+        email: 'valid_email',
+        password: 'hashed_password'
+      }
+    }
+  }
+
+  return new AddAccountRepositoryStub()
+}
+
 const makeSut = (): SutTypes => {
   class AddAccountUseCaseStub extends AddAccountUseCase {
     async add (account: AccountInput): Promise<AccountModel> {
@@ -34,7 +50,8 @@ const makeSut = (): SutTypes => {
   }
   const userEntity = new UserAccount()
   const ecrypter = makeEncrypterStub()
-  const addAccountUseCase = new AddAccountUseCaseStub(userEntity, ecrypter)
+  const repository = makeRepositoryStub()
+  const addAccountUseCase = new AddAccountUseCaseStub(userEntity, ecrypter, repository)
   const sut = new SignUpController(addAccountUseCase)
 
   return {

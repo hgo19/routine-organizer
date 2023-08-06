@@ -1,27 +1,29 @@
 import { type UserAccount } from '../entities/UserAccount'
+import { type AddAccountRepository } from '../protocols/add-account-repository'
 import { type Encrypter } from '../protocols/encrypter'
 import { type AccountInput, type AccountModel } from './add-account-protocols'
 
 export class AddAccountUseCase {
   private readonly userEntity
   private readonly encrypter
-  constructor (userEntity: UserAccount, encrypter: Encrypter) {
+  private readonly repository
+
+  constructor (userEntity: UserAccount, encrypter: Encrypter, repository: AddAccountRepository) {
     this.userEntity = userEntity
     this.encrypter = encrypter
+    this.repository = repository
   }
 
   async add (account: AccountInput): Promise<AccountModel> {
     this.userEntity.create(account)
-
     const hashedPasword = await this.encrypter.encrypt(this.userEntity.password)
-
-    const fakeAccount = {
-      id: 'valid_id',
-      name: account.name,
-      email: account.email,
-      password: 'hashed_password'
+    const accountData = {
+      name: this.userEntity.name,
+      email: this.userEntity.email,
+      password: hashedPasword
     }
+    const createdAccount = await this.repository.create(accountData)
 
-    return await new Promise(resolve => { resolve(fakeAccount) })
+    return createdAccount
   }
 }
