@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "jest --passWithNoTests --silent --noStackTrace --runInBand",
-    "test:unit": "npm test -- --watch -c jest-config-unit.cjs"
+    "test:unit": "npm test -- --watch -c jest-config-unit.cjs",
+    "test:verbose": "jest --watch"
   },
   "keywords": [],
   "author": "",

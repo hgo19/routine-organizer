@@ -8,7 +8,7 @@ export class AddAccountUseCase {
   }
 
   async add (account: AccountInput): Promise<AccountModel> {
-    this.userEntity.createUser(account)
+    this.userEntity.create(account)
     const fakeAccount = {
       id: 'valid_id',
       name: account.name,
