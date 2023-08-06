@@ -1,4 +1,5 @@
 import { UserAccount } from '../../../domain/entities/UserAccount'
+import { type Encrypter } from '../../../domain/protocols/encrypter'
 import { AddAccountUseCase } from '../../../domain/usecases/add-account'
 import { type AccountInput, type AccountModel } from '../../../domain/usecases/add-account-protocols'
 import { SignUpController } from './signup'
@@ -6,6 +7,16 @@ import { SignUpController } from './signup'
 interface SutTypes {
   sut: SignUpController
   addAccountUseCase: AddAccountUseCase
+}
+
+const makeEncrypterStub = (): Encrypter => {
+  class EncrypterStub implements Encrypter {
+    async encrypt (password: string): Promise<string> {
+      return 'hashed_password'
+    }
+  }
+
+  return new EncrypterStub()
 }
 
 const makeSut = (): SutTypes => {
@@ -22,7 +33,8 @@ const makeSut = (): SutTypes => {
     }
   }
   const userEntity = new UserAccount()
-  const addAccountUseCase = new AddAccountUseCaseStub(userEntity)
+  const ecrypter = makeEncrypterStub()
+  const addAccountUseCase = new AddAccountUseCaseStub(userEntity, ecrypter)
   const sut = new SignUpController(addAccountUseCase)
 
   return {
