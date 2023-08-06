@@ -5,7 +5,7 @@ export class UserAccount {
   private email: string
   private password: string
   private passwordConfirmation: string
-  private readonly emailRgx: any
+  private readonly emailRgx: RegExp
 
   constructor () {
     this.name = ''
@@ -16,22 +16,38 @@ export class UserAccount {
   }
 
   create (userInfo: AccountInput): boolean {
+    this.validations(userInfo)
     this.name = userInfo.name
     this.email = userInfo.email
     this.password = userInfo.password
     this.passwordConfirmation = userInfo.passwordConfirmation
-    return this.validations()
+    return true
   }
 
-  validations (): boolean {
-    if (this.password !== this.passwordConfirmation) {
+  validations (userInfo: AccountInput): void {
+    const { name, email, password, passwordConfirmation } = userInfo
+    this.lengthValidations(userInfo)
+
+    if (password !== passwordConfirmation) {
       throw new Error('Invalid Parameters: Passwords must be the same!')
     }
+    if (!this.emailRgx.test(email)) {
+      throw new Error('Invalid Parameters: Email is incorrect')
+    }
+    const properties = [name, email, password, passwordConfirmation]
+    if (!properties.some((property) => property === '')) {
+      throw new Error("Invalid Parameters: Property can't be empty")
+    }
+  }
 
-    return true
+  lengthValidations (userInfo: AccountInput): void {
+    const { name, password } = userInfo
+    if (name.length < 3) {
+      throw new Error('Invalid Parameters: Name must be more than 3 characters')
+    }
 
-    // if(!this.email.match(this.emailRgx)) {
-    //   throw new Error()
-    // }
+    if (password.length < 6) {
+      throw new Error('Invalid Parameters: Password must be more than 6 characters')
+    }
   }
 }
