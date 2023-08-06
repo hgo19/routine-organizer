@@ -35,4 +35,20 @@ describe('UserAccount Entity', () => {
       expect(() => sut.create(userInfo)).toThrow()
     })
   })
+
+  test('should shows the user information when UserAccount was created on success', () => {
+    // System under test
+    const sut = new UserAccount()
+    const userInfo = {
+      name: 'valid_name',
+      email: 'valid_email@email.com',
+      password: 'valid_password',
+      passwordConfirmation: 'valid_password'
+    }
+
+    sut.create(userInfo)
+    expect(sut.name).toBe(userInfo.name)
+    expect(sut.email).toBe(userInfo.email)
+    expect(sut.password).toBe(userInfo.password)
+  })
 })
