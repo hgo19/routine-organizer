@@ -1,29 +1,43 @@
 import { UserAccount } from '../entities/UserAccount'
 import { AddAccountUseCase } from './add-account'
 import { type AccountInput } from './add-account-protocols'
+import { type Encrypter } from '../protocols/encrypter'
+
+const makeEntityStub = (): UserAccount => {
+  class UserEntityStub extends UserAccount {
+    validations (): boolean {
+      return true
+    }
+  }
+
+  return new UserEntityStub()
+}
+
+const makeEncrypterStub = (): Encrypter => {
+  class EncrypterStub implements Encrypter {
+    async encrypt (password: string): Promise<string> {
+      return 'hashed_password'
+    }
+  }
+
+  return new EncrypterStub()
+}
 
 interface SutTypes {
   sut: AddAccountUseCase
   userEntity: UserAccount
+  encrypter: Encrypter
 }
 
 const makeSut = (): SutTypes => {
-  class UserEntityStub extends UserAccount {
-    create (userInfo: AccountInput): boolean {
-      return true
-    }
-
-    validations (): boolean {
-      throw new Error()
-    }
-  }
-
-  const userEntity = new UserEntityStub()
-  const sut = new AddAccountUseCase(userEntity)
+  const userEntity = makeEntityStub()
+  const encrypter = makeEncrypterStub()
+  const sut = new AddAccountUseCase(userEntity, encrypter)
 
   return {
     sut,
-    userEntity
+    userEntity,
+    encrypter
   }
 }
 
@@ -55,5 +69,19 @@ describe('', () => {
     }
 
     await expect(sut.add(accountInput)).rejects.toThrow()
+  })
+
+  test('should calls an Encrypter with the right values', async () => {
+    // System under test
+    const { sut, encrypter } = makeSut()
+    const encryptSpyt = jest.spyOn(encrypter, 'encrypt')
+    const accountInput = {
+      name: 'valid_name',
+      email: 'valid_email',
+      password: 'valid_password',
+      passwordConfirmation: 'invalid_password'
+    }
+    await sut.add(accountInput)
+    expect(encryptSpyt).toHaveBeenCalledWith(accountInput.password)
   })
 })
