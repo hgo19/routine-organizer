@@ -1,6 +1,6 @@
 import { UserAccount } from '../entities/UserAccount'
 import { AddAccountUseCase } from './add-account'
-import { type AccountModel, type Encrypter, type AddAccountRepository, type AccountBasic } from '../protocols'
+import { type AccountModel, type Encrypter, type AddAccountRepository, type AccountBasic, type TokenAuthenticator } from '../protocols'
 
 const makeEntityStub = (): UserAccount => {
   class UserEntityStub extends UserAccount {
@@ -37,24 +37,37 @@ const makeRepositoryStub = (): AddAccountRepository => {
   return new AddAccountRepositoryStub()
 }
 
+const makeTokenAuthenticatorStub = (): TokenAuthenticator => {
+  class TokenAuthenticatorStub implements TokenAuthenticator {
+    async generate (payload: AccountBasic): Promise<string> {
+      return await new Promise(resolve => { resolve('generated_token') })
+    }
+  }
+
+  return new TokenAuthenticatorStub()
+}
+
 interface SutTypes {
   sut: AddAccountUseCase
   userEntity: UserAccount
   encrypter: Encrypter
   accountRepository: AddAccountRepository
+  tokenAuth: TokenAuthenticator
 }
 
 const makeSut = (): SutTypes => {
   const userEntity = makeEntityStub()
   const encrypter = makeEncrypterStub()
   const accountRepository = makeRepositoryStub()
-  const sut = new AddAccountUseCase(userEntity, encrypter, accountRepository)
+  const tokenAuth = makeTokenAuthenticatorStub()
+  const sut = new AddAccountUseCase(userEntity, encrypter, accountRepository, tokenAuth)
 
   return {
     sut,
     userEntity,
     encrypter,
-    accountRepository
+    accountRepository,
+    tokenAuth
   }
 }
 
@@ -120,6 +133,24 @@ describe('', () => {
     })
   })
 
+  test('should calls the TokenAuthenticator with the right values', async () => {
+    // System under test
+    const { sut, tokenAuth } = makeSut()
+    const generateTokenSpy = jest.spyOn(tokenAuth, 'generate')
+    const accountInput = {
+      name: 'valid_name',
+      email: 'valid_email',
+      password: 'valid_password',
+      passwordConfirmation: 'invalid_password'
+    }
+    await sut.add(accountInput)
+    expect(generateTokenSpy).toHaveBeenCalledWith({
+      name: 'valid_name',
+      email: 'valid_email',
+      password: 'hashed_password'
+    })
+  })
+
   test('should returns the created Account correctly', async () => {
     // System under test
     const { sut } = makeSut()
@@ -134,7 +165,8 @@ describe('', () => {
       id: 'valid_id',
       name: 'valid_name',
       email: 'valid_email',
-      password: 'hashed_password'
+      password: 'hashed_password',
+      token: 'generated_token'
     })
   })
 })
