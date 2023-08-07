@@ -1,15 +1,22 @@
 import { type UserAccount } from '../entities/UserAccount'
-import { type AccountInput, type AccountModel, type Encrypter, type AddAccountRepository } from '../protocols'
+import { type AccountInput, type AccountModel, type Encrypter, type AddAccountRepository, type TokenAuthenticator } from '../protocols'
 
 export class AddAccountUseCase {
   private readonly userEntity
   private readonly encrypter
   private readonly repository
+  private readonly tokenAuth
 
-  constructor (userEntity: UserAccount, encrypter: Encrypter, repository: AddAccountRepository) {
+  constructor (
+    userEntity: UserAccount,
+    encrypter: Encrypter,
+    repository: AddAccountRepository,
+    tokenAuth: TokenAuthenticator
+  ) {
     this.userEntity = userEntity
     this.encrypter = encrypter
     this.repository = repository
+    this.tokenAuth = tokenAuth
   }
 
   async add (account: AccountInput): Promise<AccountModel> {
@@ -20,8 +27,10 @@ export class AddAccountUseCase {
       email: this.userEntity.email,
       password: hashedPasword
     }
+
+    const token = await this.tokenAuth.generate(accountData)
     const createdAccount = await this.repository.create(accountData)
 
-    return createdAccount
+    return { ...createdAccount, token }
   }
 }
