@@ -1,4 +1,5 @@
 import { InvalidParamsError } from '../exceptions/invalid-params'
+import { TypeError } from '../exceptions/type'
 import { type AccountInput } from '../protocols'
 
 export class UserAccount {
@@ -27,6 +28,7 @@ export class UserAccount {
 
   validations (userInfo: AccountInput): void {
     const { name, email, password, passwordConfirmation } = userInfo
+    this.typeValidations(userInfo)
     this.lengthValidations(userInfo)
 
     if (password !== passwordConfirmation) {
@@ -49,6 +51,14 @@ export class UserAccount {
 
     if (password.length < 6) {
       throw new InvalidParamsError('Password must be more than 6 characters')
+    }
+  }
+
+  typeValidations (userInfo: AccountInput): void {
+    const { name, email, password, passwordConfirmation } = userInfo
+    const properties = [name, email, password, passwordConfirmation]
+    if (properties.some((property) => typeof property !== 'string')) {
+      throw new TypeError('Property value need to be a string')
     }
   }
 
