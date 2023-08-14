@@ -25,12 +25,12 @@ export class SignUpController implements IController<AccountInput> {
       const email = value.email as string
       const password = value.password as string
       const passwordConfirmation = value.passwordConfirmation as string
-      await this._useCase.add({ name, email, password, passwordConfirmation })
+      const userReturn = await this._useCase.add({ name, email, password, passwordConfirmation })
 
       return await new Promise(resolve => {
         resolve({
-          statusCode: 200,
-          body: {}
+          statusCode: 201,
+          body: userReturn
         })
       })
     } catch (error) {
