@@ -50,7 +50,8 @@ const makeSut = (): SutTypes => {
         id: 'valid_id',
         name: account.name,
         email: account.email,
-        password: 'hashed_password'
+        password: 'hashed_password',
+        token: 'generated_token'
       }
 
       return await new Promise(resolve => { resolve(fakeAccount) })
@@ -70,10 +71,13 @@ const makeSut = (): SutTypes => {
 }
 
 describe('SignUp Controller', () => {
-  const { sut, addAccountUseCase } = makeSut()
+  afterEach(() => {
+    jest.clearAllMocks()
+  })
 
   test('should return 400 if a property is missing', async () => {
     // System under test
+    const { sut } = makeSut()
     const bodyMissingProperties = [
       {
         email: 'any_email',
@@ -108,6 +112,7 @@ describe('SignUp Controller', () => {
 
   test('should returns an http error if AddAccountUseCase throws', async () => {
     // System under test
+    const { sut, addAccountUseCase } = makeSut()
     jest.spyOn(addAccountUseCase, 'add').mockImplementation(() => { throw new Error() })
     const bodyRequest = {
       name: 'valid_name',
@@ -128,6 +133,7 @@ describe('SignUp Controller', () => {
 
   test('should ensure AddAccountUseCase was called with the right values', async () => {
     // System under test
+    const { sut, addAccountUseCase } = makeSut()
     const addSpy = jest.spyOn(addAccountUseCase, 'add')
     const bodyRequest = {
       name: 'valid_name',
@@ -138,5 +144,27 @@ describe('SignUp Controller', () => {
 
     await sut.execute(bodyRequest)
     expect(addSpy).toHaveBeenCalledWith(bodyRequest)
+  })
+
+  test('should return a http response with the right infos on success', async () => {
+    // System under test
+    const { sut } = makeSut()
+    const bodyRequest = {
+      name: 'valid_name',
+      email: 'valid_email@email.com',
+      password: 'valid_password',
+      passwordConfirmation: 'valid_confirmation'
+    }
+    const response = await sut.execute(bodyRequest)
+    expect(response).toEqual({
+      statusCode: 201,
+      body: {
+        id: 'valid_id',
+        name: 'valid_name',
+        email: 'valid_email@email.com',
+        password: 'hashed_password',
+        token: 'generated_token'
+      }
+    })
   })
 })
