@@ -115,6 +115,19 @@ describe('', () => {
     expect(encryptSpyt).toHaveBeenCalledWith(accountInput.password)
   })
 
+  test('should throws if Encrypter throw', async () => {
+    // System under test
+    const { sut, encrypter } = makeSut()
+    jest.spyOn(encrypter, 'encrypt').mockImplementation(() => { throw new Error() })
+    const accountInput = {
+      name: 'valid_name',
+      email: 'valid_email',
+      password: 'valid_password',
+      passwordConfirmation: 'invalid_password'
+    }
+    await expect(sut.add(accountInput)).rejects.toThrow()
+  })
+
   test('should calls the Repository with the right values', async () => {
     // System under test
     const { sut, accountRepository } = makeSut()
@@ -133,6 +146,19 @@ describe('', () => {
     })
   })
 
+  test('should throws if Repository throw', async () => {
+    // System under test
+    const { sut, accountRepository } = makeSut()
+    jest.spyOn(accountRepository, 'create').mockImplementation(() => { throw new Error() })
+    const accountInput = {
+      name: 'valid_name',
+      email: 'valid_email',
+      password: 'valid_password',
+      passwordConfirmation: 'invalid_password'
+    }
+    await expect(sut.add(accountInput)).rejects.toThrow()
+  })
+
   test('should calls the TokenAuthenticator with the right values', async () => {
     // System under test
     const { sut, tokenAuth } = makeSut()
@@ -149,6 +175,19 @@ describe('', () => {
       email: 'valid_email',
       password: 'hashed_password'
     })
+  })
+
+  test('should throws if TokenAuthenticator throw', async () => {
+    // System under test
+    const { sut, tokenAuth } = makeSut()
+    jest.spyOn(tokenAuth, 'generate').mockImplementation(() => { throw new Error() })
+    const accountInput = {
+      name: 'valid_name',
+      email: 'valid_email',
+      password: 'valid_password',
+      passwordConfirmation: 'invalid_password'
+    }
+    await expect(sut.add(accountInput)).rejects.toThrow()
   })
 
   test('should returns the created Account correctly', async () => {
