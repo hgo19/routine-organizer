@@ -106,6 +106,26 @@ describe('SignUp Controller', () => {
     await Promise.all(promises)
   })
 
+  test('should returns an http error if AddAccountUseCase throws', async () => {
+    // System under test
+    jest.spyOn(addAccountUseCase, 'add').mockImplementation(() => { throw new Error() })
+    const bodyRequest = {
+      name: 'valid_name',
+      email: 'valid_email@email.com',
+      password: 'valid_password',
+      passwordConfirmation: 'valid_confirmation'
+    }
+
+    const response = await sut.execute(bodyRequest)
+
+    expect(response).toEqual({
+      statusCode: 500,
+      body: {
+        message: 'Internal Server Error'
+      }
+    })
+  })
+
   test('should ensure AddAccountUseCase was called with the right values', async () => {
     // System under test
     const addSpy = jest.spyOn(addAccountUseCase, 'add')
