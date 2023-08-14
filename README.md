@@ -17,3 +17,5 @@ This app should help with your routine. The focus of this application is to help
 - ExpressJS
 - ReactJS
 - Vite
+- JWT
+- Bcrypt
