@@ -10,8 +10,12 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/bcrypt": "^5.0.0",
     "git-commit-msg-linter": "^5.0.4",
     "i": "^0.3.7",
     "npm": "^9.8.1"
+  },
+  "dependencies": {
+    "bcrypt": "^5.1.0"
   }
 }
