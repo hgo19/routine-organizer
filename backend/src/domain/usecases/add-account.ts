@@ -28,7 +28,7 @@ export class AddAccountUseCase {
       password: hashedPasword
     }
 
-    const token = await this.tokenAuth.generate(accountData)
+    const token = this.tokenAuth.generate(accountData)
     const createdAccount = await this.repository.create(accountData)
 
     return { ...createdAccount, token }

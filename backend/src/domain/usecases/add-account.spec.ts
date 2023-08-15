@@ -39,8 +39,8 @@ const makeRepositoryStub = (): AddAccountRepository => {
 
 const makeTokenAuthenticatorStub = (): TokenAuthenticator => {
   class TokenAuthenticatorStub implements TokenAuthenticator {
-    async generate (payload: AccountBasic): Promise<string> {
-      return await new Promise(resolve => { resolve('generated_token') })
+    generate (payload: AccountBasic): string {
+      return 'generated_token'
     }
   }
 
