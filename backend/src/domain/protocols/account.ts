@@ -9,5 +9,5 @@ export interface AccountInput extends AccountBasic {
 }
 
 export interface AccountModel extends AccountBasic {
-  id: string
+  id?: string
 }
