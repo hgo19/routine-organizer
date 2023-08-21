@@ -18,11 +18,11 @@ abstract class AbstractODM<T> {
     this.model = models[this.modelName] ?? model(this.modelName, this.schema)
   }
 
-  public async create (entity: T): Promise<unknown> {
+  public async create (entity: T): Promise<any> {
     return await this.model.create({ ...entity })
   }
 
-  public async getAll (): Promise<unknown> {
+  public async getAll (): Promise<any> {
     return await this.model.find({})
   }
 
@@ -31,7 +31,7 @@ abstract class AbstractODM<T> {
     return await this.model.findById(id)
   }
 
-  public async update (id: string, entity: T): Promise<unknown> {
+  public async update (id: string, entity: T): Promise<any> {
     if (!isValidObjectId(id)) throw Error('Invalid mongo id')
 
     const filter = { _id: id }
