@@ -1,13 +1,15 @@
 import { type NextFunction, type Request, type Response } from 'express'
 import { InvalidParamsError } from '../../domain/exceptions/invalid-params'
-import { type AbstractHttpError, BadRequestError, InternalServerError } from '../helpers/http-erros'
+import { AbstractHttpError, BadRequestError, InternalServerError } from '../helpers/http-erros'
 import { TypeError } from '../../domain/exceptions/type'
 
 export const errorTreatment = (error: Error, _req: Request, _res: Response, next: NextFunction): any => {
   if (error instanceof InvalidParamsError) {
-    next(new BadRequestError('Invalid Params!'))
+    next(new BadRequestError(error.message))
   } else if (error instanceof TypeError) {
-    next(new BadRequestError('Invalid parameters types!'))
+    next(new BadRequestError(error.message))
+  } else if (error instanceof AbstractHttpError) {
+    next(error)
   } else {
     next(new InternalServerError('Unexpected Error Happend'))
   }
