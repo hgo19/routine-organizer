@@ -4,6 +4,6 @@ import { userValidations } from '../../presentation/middlewares/signup-validatio
 
 const userRoute = Router()
 
-userRoute.post('/', userValidations, makeSignUpController.execute)
+userRoute.post('/register', userValidations, makeSignUpController.execute)
 
 export default userRoute
