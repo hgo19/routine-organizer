@@ -33,5 +33,6 @@ module.exports = {
         "@typescript-eslint"
     ],
     rules: {
+        "@typescript-eslint/no-misused-promises": 0
     }
 }
