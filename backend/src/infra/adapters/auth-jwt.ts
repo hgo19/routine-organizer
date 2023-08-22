@@ -8,7 +8,7 @@ export class AuthJwt implements TokenAuthenticator {
   }
 
   generate (payload: AccountBasic): string {
-    const generatedToken = jwt.sign(payload, this.secret, { expiresIn: '2h', algorithm: 'RS256' })
+    const generatedToken = jwt.sign(payload, this.secret, { expiresIn: '2h', algorithm: 'HS256' })
     return generatedToken
   }
 }
