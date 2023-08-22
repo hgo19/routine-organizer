@@ -3,7 +3,7 @@ import { InvalidParamsError } from '../../domain/exceptions/invalid-params'
 import { type AbstractHttpError, BadRequestError, InternalServerError } from '../helpers/http-erros'
 import { TypeError } from '../../domain/exceptions/type'
 
-export const errorTreatment = (_req: Request, _res: Response, next: NextFunction, error: Error): void => {
+export const errorTreatment = (error: Error, _req: Request, _res: Response, next: NextFunction): any => {
   if (error instanceof InvalidParamsError) {
     next(new BadRequestError('Invalid Params!'))
   } else if (error instanceof TypeError) {
@@ -13,7 +13,7 @@ export const errorTreatment = (_req: Request, _res: Response, next: NextFunction
   }
 }
 
-export const errorHandler = (_req: Request, res: Response, _next: NextFunction, error: AbstractHttpError): any => {
+export const errorHandler = (error: AbstractHttpError, _req: Request, res: Response, _next: NextFunction): any => {
   const { message, statusCode } = error
   return res.status(statusCode).json({ error: message })
 }
