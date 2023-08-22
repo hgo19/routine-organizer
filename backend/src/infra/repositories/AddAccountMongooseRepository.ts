@@ -8,6 +8,13 @@ export class AddAccountMongooseRepository implements AddAccountRepository {
   }
 
   async create (account: AccountBasic): Promise<AccountModel> {
-    return await this.persistence.create(account)
+    const accountInDb = await this.persistence.create(account)
+    const createdAccount = {
+      id: accountInDb._id.toString(),
+      name: accountInDb.name,
+      email: accountInDb.email,
+      password: accountInDb.password
+    }
+    return createdAccount
   }
 }
