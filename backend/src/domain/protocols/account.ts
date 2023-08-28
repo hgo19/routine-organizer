@@ -11,3 +11,7 @@ export interface AccountInput extends AccountBasic {
 export interface AccountModel extends AccountBasic {
   id?: string
 }
+
+export interface AcountOutput extends AccountModel {
+  token: string
+}

@@ -1,5 +1,5 @@
 import { type UserAccount } from '../entities/UserAccount'
-import { type AccountInput, type AccountModel, type Encrypter, type AddAccountRepository, type TokenAuthenticator } from '../protocols'
+import { type AccountInput, type AcountOutput, type Encrypter, type AddAccountRepository, type TokenAuthenticator } from '../protocols'
 
 export class AddAccountUseCase {
   private readonly userEntity
@@ -19,7 +19,7 @@ export class AddAccountUseCase {
     this.tokenAuth = tokenAuth
   }
 
-  async add (account: AccountInput): Promise<AccountModel> {
+  async add (account: AccountInput): Promise<AcountOutput> {
     this.userEntity.create(account)
     const hashedPasword = await this.encrypter.encrypt(this.userEntity.password)
     const accountData = {
