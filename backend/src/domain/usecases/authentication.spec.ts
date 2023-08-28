@@ -1,12 +1,14 @@
-import { type AccountModel } from '../protocols'
+import { type Encrypter, type AccountModel } from '../protocols'
 import { type AuthenticationRepository } from '../protocols/authentication-repository'
 import { Authentication } from './authentication'
 
 interface SutTypes {
   sut: Authentication
   repository: AuthenticationRepository
+  encrypter: Encrypter
 }
-const makeSut = (): SutTypes => {
+
+const makeAuthenticationRepoStub = (): AuthenticationRepository => {
   class AtuhenticationRepositoryStub implements AuthenticationRepository {
     async findByEmail (): Promise<AccountModel> {
       const fakeUser = {
@@ -18,11 +20,27 @@ const makeSut = (): SutTypes => {
       return await new Promise(resolve => { resolve(fakeUser) })
     }
   }
-  const repository = new AtuhenticationRepositoryStub()
-  const sut = new Authentication(repository)
+  return new AtuhenticationRepositoryStub()
+}
+
+const makeEncrypterStub = (): Encrypter => {
+  class EncrypterStub implements Encrypter {
+    async encrypt (password: string): Promise<string> {
+      return 'hashed_password'
+    }
+  }
+
+  return new EncrypterStub()
+}
+
+const makeSut = (): SutTypes => {
+  const repository = makeAuthenticationRepoStub()
+  const encrypter = makeEncrypterStub()
+  const sut = new Authentication(repository, encrypter)
 
   return {
     repository,
+    encrypter,
     sut
   }
 }
@@ -34,7 +52,7 @@ describe('Authentication use case', () => {
     const findSpy = jest.spyOn(repository, 'findByEmail')
     const validInput = {
       email: 'valid@email.com',
-      password: 'valid@password'
+      password: 'valid_password'
     }
 
     await sut.auth(validInput)
@@ -47,8 +65,22 @@ describe('Authentication use case', () => {
     jest.spyOn(repository, 'findByEmail').mockImplementation(() => { throw new Error() })
     const invalidInput = {
       email: 'invalid@email.com',
-      password: 'valid@password'
+      password: 'valid_password'
     }
     await expect(sut.auth(invalidInput)).rejects.toThrow()
+  })
+
+  test('ensure encrypter was called with the right value', async () => {
+    // System under test
+    const { sut, encrypter } = makeSut()
+    const encryptSpy = jest.spyOn(encrypter, 'encrypt')
+    const validInput = {
+      email: 'valid@email.com',
+      password: 'valid_password'
+    }
+
+    await sut.auth(validInput)
+
+    expect(encryptSpy).toHaveBeenCalledWith(validInput.password)
   })
 })
