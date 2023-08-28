@@ -71,7 +71,7 @@ const makeSut = (): SutTypes => {
   }
 }
 
-describe('', () => {
+describe('AddAccount use case', () => {
   test('should creates the UserAccount entity in the use case', async () => {
     // System under test
     const { sut, userEntity } = makeSut()
