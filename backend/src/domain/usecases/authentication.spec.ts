@@ -1,4 +1,4 @@
-import { type Encrypter, type AccountModel } from '../protocols'
+import { type Encrypter, type AccountModel, type TokenAuthenticator, type AccountBasic } from '../protocols'
 import { type AuthenticationRepository } from '../protocols/authentication-repository'
 import { Authentication } from './authentication'
 
@@ -6,6 +6,7 @@ interface SutTypes {
   sut: Authentication
   repository: AuthenticationRepository
   encrypter: Encrypter
+  tokenAuth: TokenAuthenticator
 }
 
 const makeAuthenticationRepoStub = (): AuthenticationRepository => {
@@ -33,14 +34,26 @@ const makeEncrypterStub = (): Encrypter => {
   return new EncrypterStub()
 }
 
+const makeTokenAuthenticatorStub = (): TokenAuthenticator => {
+  class TokenAuthenticatorStub implements TokenAuthenticator {
+    generate (payload: AccountBasic): string {
+      return 'generated_token'
+    }
+  }
+
+  return new TokenAuthenticatorStub()
+}
+
 const makeSut = (): SutTypes => {
   const repository = makeAuthenticationRepoStub()
   const encrypter = makeEncrypterStub()
-  const sut = new Authentication(repository, encrypter)
+  const tokenAuth = makeTokenAuthenticatorStub()
+  const sut = new Authentication(repository, encrypter, tokenAuth)
 
   return {
     repository,
     encrypter,
+    tokenAuth,
     sut
   }
 }
@@ -100,5 +113,23 @@ describe('Authentication use case', () => {
     }
 
     await expect(sut.auth(invalidInput)).rejects.toThrow()
+  })
+
+  test('ensure TokenAuthenticator was called with the right value', async () => {
+    // System under test
+    const { sut, tokenAuth } = makeSut()
+    const tokenAuthSpy = jest.spyOn(tokenAuth, 'generate')
+    const validInput = {
+      email: 'valid@email.com',
+      password: 'valid_password'
+    }
+
+    await sut.auth(validInput)
+
+    expect(tokenAuthSpy).toHaveBeenCalledWith({
+      name: 'valid_name',
+      email: 'valid@email.com',
+      password: 'hashed_password'
+    })
   })
 })
