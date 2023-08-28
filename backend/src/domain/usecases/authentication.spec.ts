@@ -46,6 +46,11 @@ const makeSut = (): SutTypes => {
 }
 
 describe('Authentication use case', () => {
+  beforeEach(() => {
+    // Reset all mocks before each test
+    jest.clearAllMocks()
+  })
+
   test('should ensure repository method findByEmail was called with the right values', async () => {
     // System under test
     const { sut, repository } = makeSut()
@@ -82,5 +87,18 @@ describe('Authentication use case', () => {
     await sut.auth(validInput)
 
     expect(encryptSpy).toHaveBeenCalledWith(validInput.password)
+  })
+
+  test("ensure the Authentication use case throws if the password on input and the password in db aren't the same ", async () => {
+    // System under test
+    const { sut, encrypter } = makeSut()
+    const encrypterSpy = jest.spyOn(encrypter, 'encrypt')
+    encrypterSpy.mockResolvedValue(Promise.resolve('new_hashed_password'))
+    const invalidInput = {
+      email: 'valid@email.com',
+      password: 'invalid_password'
+    }
+
+    await expect(sut.auth(invalidInput)).rejects.toThrow()
   })
 })
