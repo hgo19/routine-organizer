@@ -132,4 +132,22 @@ describe('Authentication use case', () => {
       password: 'hashed_password'
     })
   })
+
+  test('should return an object with name, email and token on success', async () => {
+    // System under test
+    const { sut } = makeSut()
+    const validInput = {
+      email: 'valid@email.com',
+      password: 'valid_password'
+    }
+
+    const response = await sut.auth(validInput)
+
+    expect(response).toEqual({
+      name: 'valid_name',
+      email: 'valid@email.com',
+      password: 'hashed_password',
+      token: 'generated_token'
+    })
+  })
 })
