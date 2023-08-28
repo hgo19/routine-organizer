@@ -1,5 +1,5 @@
 import { AuthenticationError } from '../exceptions/authentication-error'
-import { type Encrypter } from '../protocols'
+import { type TokenAuthenticator, type Encrypter } from '../protocols'
 import { type AuthenticationRepository } from '../protocols/authentication-repository'
 
 export interface inputAuthentication {
@@ -10,10 +10,12 @@ export interface inputAuthentication {
 export class Authentication {
   private readonly repository
   private readonly encrypter
+  private readonly tokenAuth
 
-  constructor (repository: AuthenticationRepository, encrypter: Encrypter) {
+  constructor (repository: AuthenticationRepository, encrypter: Encrypter, tokenAuth: TokenAuthenticator) {
     this.repository = repository
     this.encrypter = encrypter
+    this.tokenAuth = tokenAuth
   }
 
   async auth (input: inputAuthentication): Promise<void> {
@@ -24,5 +26,13 @@ export class Authentication {
     if (userInDb.password !== hashPassword) {
       throw new AuthenticationError('Invalid password')
     }
+
+    const accountData = {
+      name: userInDb.name,
+      email,
+      password: hashPassword
+    }
+
+    const token = this.tokenAuth.generate(accountData)
   }
 }
