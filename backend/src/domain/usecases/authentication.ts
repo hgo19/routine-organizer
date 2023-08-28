@@ -1,5 +1,5 @@
 import { AuthenticationError } from '../exceptions/authentication-error'
-import { type TokenAuthenticator, type Encrypter } from '../protocols'
+import { type TokenAuthenticator, type Encrypter, type AccountOutput } from '../protocols'
 import { type AuthenticationRepository } from '../protocols/authentication-repository'
 
 export interface inputAuthentication {
@@ -18,7 +18,7 @@ export class Authentication {
     this.tokenAuth = tokenAuth
   }
 
-  async auth (input: inputAuthentication): Promise<void> {
+  async auth (input: inputAuthentication): Promise<AccountOutput> {
     const { email, password } = input
     const userInDb = await this.repository.findByEmail(email)
     const hashPassword = await this.encrypter.encrypt(password)
@@ -34,5 +34,9 @@ export class Authentication {
     }
 
     const token = this.tokenAuth.generate(accountData)
+
+    return {
+      ...accountData, token
+    }
   }
 }
