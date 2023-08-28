@@ -1,3 +1,4 @@
+import { AuthenticationError } from '../exceptions/authentication-error'
 import { type Encrypter } from '../protocols'
 import { type AuthenticationRepository } from '../protocols/authentication-repository'
 
@@ -15,9 +16,13 @@ export class Authentication {
     this.encrypter = encrypter
   }
 
-  async auth (input: inputAuthentication): Promise<any> {
+  async auth (input: inputAuthentication): Promise<void> {
     const { email, password } = input
     const userInDb = await this.repository.findByEmail(email)
     const hashPassword = await this.encrypter.encrypt(password)
+
+    if (userInDb.password !== hashPassword) {
+      throw new AuthenticationError('Invalid password')
+    }
   }
 }
