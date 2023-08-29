@@ -14,6 +14,10 @@ const makeEntityStub = (): UserAccount => {
 
 const makeEncrypterStub = (): Encrypter => {
   class EncrypterStub implements Encrypter {
+    async testPassword (password: string, hashedPassword: string): Promise<boolean> {
+      return true
+    }
+
     async encrypt (password: string): Promise<string> {
       return 'hashed_password'
     }

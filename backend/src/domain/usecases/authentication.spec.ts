@@ -26,8 +26,12 @@ const makeAuthenticationRepoStub = (): AuthenticationRepository => {
 
 const makeEncrypterStub = (): Encrypter => {
   class EncrypterStub implements Encrypter {
-    async encrypt (password: string): Promise<string> {
+    async encrypt (value: string): Promise<string> {
       return 'hashed_password'
+    }
+
+    async testPassword (password: string, hashedPassword: string): Promise<boolean> {
+      return true
     }
   }
 
@@ -91,7 +95,7 @@ describe('Authentication use case', () => {
   test('ensure encrypter was called with the right value', async () => {
     // System under test
     const { sut, encrypter } = makeSut()
-    const encryptSpy = jest.spyOn(encrypter, 'encrypt')
+    const encryptSpy = jest.spyOn(encrypter, 'testPassword')
     const validInput = {
       email: 'valid@email.com',
       password: 'valid_password'
@@ -99,14 +103,14 @@ describe('Authentication use case', () => {
 
     await sut.auth(validInput)
 
-    expect(encryptSpy).toHaveBeenCalledWith(validInput.password)
+    expect(encryptSpy).toHaveBeenCalledWith(validInput.password, 'hashed_password')
   })
 
   test("ensure the Authentication use case throws if the password on input and the password in db aren't the same ", async () => {
     // System under test
     const { sut, encrypter } = makeSut()
-    const encrypterSpy = jest.spyOn(encrypter, 'encrypt')
-    encrypterSpy.mockResolvedValue(Promise.resolve('new_hashed_password'))
+    const encrypterSpy = jest.spyOn(encrypter, 'testPassword')
+    encrypterSpy.mockResolvedValue(Promise.resolve(false))
     const invalidInput = {
       email: 'valid@email.com',
       password: 'invalid_password'
