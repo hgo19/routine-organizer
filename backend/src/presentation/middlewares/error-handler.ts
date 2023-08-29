@@ -11,6 +11,7 @@ export const errorTreatment = (error: Error, _req: Request, _res: Response, next
   } else if (error instanceof AbstractHttpError) {
     next(error)
   } else {
+    console.log(error)
     next(new InternalServerError('Unexpected Error Happend'))
   }
 }
