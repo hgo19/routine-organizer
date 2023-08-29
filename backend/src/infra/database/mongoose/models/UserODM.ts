@@ -15,6 +15,10 @@ class UserODM extends AbstractODM<AccountModel> {
     })
     super(schema, 'User')
   }
+
+  public async findByEmail (email: string): Promise<any> {
+    return await this.model.findOne({ email })
+  }
 }
 
 export default UserODM
