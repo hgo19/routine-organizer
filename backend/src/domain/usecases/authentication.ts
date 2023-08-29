@@ -21,16 +21,15 @@ export class Authentication {
   async auth (input: inputAuthentication): Promise<AccountOutput> {
     const { email, password } = input
     const userInDb = await this.repository.findByEmail(email)
-    const hashPassword = await this.encrypter.encrypt(password)
-
-    if (userInDb.password !== hashPassword) {
+    const passwordMatch = await this.encrypter.testPassword(password, userInDb.password)
+    if (!passwordMatch) {
       throw new AuthenticationError('Invalid password')
     }
 
     const accountData = {
       name: userInDb.name,
       email,
-      password: hashPassword
+      password: userInDb.password
     }
 
     const token = this.tokenAuth.generate(accountData)
