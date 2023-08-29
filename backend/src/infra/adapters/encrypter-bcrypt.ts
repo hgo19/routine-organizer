@@ -6,4 +6,9 @@ export class EncrypterBcrypt implements Encrypter {
     const hashedPassword = await bcrypt.hash(value, 12)
     return hashedPassword
   }
+
+  async testPassword (password: string, hashedPassword: string): Promise<boolean> {
+    const passwordMatch = await bcrypt.compare(password, hashedPassword)
+    return passwordMatch
+  }
 }
