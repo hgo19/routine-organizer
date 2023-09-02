@@ -12,6 +12,7 @@ export default function LoginForm() {
     e.preventDefault()
     try {
       await login(email, password)
+      setErrorMsg('')
     } catch (error) {
       if (axios.isAxiosError(error)) {
         console.log(error.status)
