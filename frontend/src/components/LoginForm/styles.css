@@ -15,10 +15,6 @@
   margin-bottom: 60px;
 }
 
-.error-msg p {
-  color: red;
-}
-
 .form-container button {
   align-self: center;
   background-color: #3a5b22;

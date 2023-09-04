@@ -3,12 +3,14 @@ import { login } from '../../services/auth-service'
 import axios from 'axios'
 import Input from '../Input'
 import './styles.css'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 export default function LoginForm() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [errorMsg, setErrorMsg] = useState('')
+
+  const navigate = useNavigate()
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -41,7 +43,9 @@ export default function LoginForm() {
         label="Password"
       />
       {errorMsg ?? <p>{errorMsg}</p>}
-      <button type="submit">Login</button>
+      <button type="submit" onClick={() => navigate('/home')}>
+        Login
+      </button>
       <span>
         Don't have account? <Link to="/register">Sign Up</Link>
       </span>
