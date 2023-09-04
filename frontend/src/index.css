@@ -1,0 +1,13 @@
+* {
+  box-sizing: border-box;
+  font-family: 'Inter', sans-serif;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: #3a5b22;
+  font-weight: 500;
+  text-decoration: none;
+}
