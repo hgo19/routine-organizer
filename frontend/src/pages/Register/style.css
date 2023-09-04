@@ -1,0 +1,28 @@
+.login-page {
+  display: flex;
+  height: 100vh;
+}
+
+.login-container {
+  display: grid;
+  background-color: #e5e5e5;
+  place-items: center;
+  width: 50%;
+}
+
+.login-img {
+  background: url('../../assets/bg.jpg') no-repeat center center;
+  background-size: cover;
+  position: relative;
+  width: 50%;
+}
+
+.login-img::before {
+  background-color: rgba(0, 0, 0, 0.5);
+  content: '';
+  height: 100%;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
+}
