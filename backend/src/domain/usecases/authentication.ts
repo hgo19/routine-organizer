@@ -35,7 +35,9 @@ export class Authentication {
     const token = this.tokenAuth.generate(accountData)
 
     return {
-      ...accountData, token
+      name: accountData.name,
+      email: accountData.email,
+      token
     }
   }
 }
