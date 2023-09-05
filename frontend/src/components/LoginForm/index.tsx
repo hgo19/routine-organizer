@@ -26,29 +26,37 @@ export default function LoginForm() {
     }
   }
 
+  const handleClick = () => {
+    if (!errorMsg) {
+      navigate('/home')
+    }
+  }
+
   return (
-    <form onSubmit={(e) => handleSubmit(e)} className="form-container">
-      <h2>Welcome back!</h2>
-      <h4>Enter your Credentials to access your account</h4>
-      <Input
-        name="email"
-        type="email"
-        onChange={(e) => setEmail(e.target.value)}
-        label="Email address"
-      />
-      <Input
-        name="password"
-        type="password"
-        onChange={(e) => setPassword(e.target.value)}
-        label="Password"
-      />
-      {errorMsg ?? <p>{errorMsg}</p>}
-      <button type="submit" onClick={() => navigate('/home')}>
-        Login
-      </button>
+    <section className="form-container">
+      <form onSubmit={(e) => handleSubmit(e)}>
+        <h2>Welcome back!</h2>
+        <h4>Enter your Credentials to access your account</h4>
+        <Input
+          name="email"
+          type="email"
+          onChange={(e) => setEmail(e.target.value)}
+          label="Email address"
+        />
+        <Input
+          name="password"
+          type="password"
+          onChange={(e) => setPassword(e.target.value)}
+          label="Password"
+        />
+        {errorMsg ?? <p>{errorMsg}</p>}
+        <button type="submit" onClick={handleClick}>
+          Login
+        </button>
+      </form>
       <span>
         Don't have account? <Link to="/register">Sign Up</Link>
       </span>
-    </form>
+    </section>
   )
 }

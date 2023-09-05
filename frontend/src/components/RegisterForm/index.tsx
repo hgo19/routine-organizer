@@ -29,40 +29,48 @@ export default function RegisterForm() {
     }
   }
 
+  const handleClick = () => {
+    if (!errorMsg) {
+      navigate('/home')
+    }
+  }
+
   return (
-    <form onSubmit={(e) => handleSubmit(e)} className="registerform-container">
-      <h2>Get Started Now</h2>
-      <Input
-        name="name"
-        type="text"
-        onChange={(e) => setName(e.target.value)}
-        label="Name"
-      />
-      <Input
-        name="email"
-        type="email"
-        onChange={(e) => setEmail(e.target.value)}
-        label="Email address"
-      />
-      <Input
-        name="password"
-        type="password"
-        onChange={(e) => setPassword(e.target.value)}
-        label="Password"
-      />
-      <Input
-        name="password"
-        type="password"
-        onChange={(e) => setPasswordConfirmation(e.target.value)}
-        label="Password Confirmation"
-      />
-      {errorMsg ?? <p>{errorMsg}</p>}
-      <button type="submit" onClick={() => navigate('/home')}>
-        Signup
-      </button>
+    <section className="registerform-container">
+      <form onSubmit={(e) => handleSubmit(e)}>
+        <h2>Get Started Now</h2>
+        <Input
+          name="name"
+          type="text"
+          onChange={(e) => setName(e.target.value)}
+          label="Name"
+        />
+        <Input
+          name="email"
+          type="email"
+          onChange={(e) => setEmail(e.target.value)}
+          label="Email address"
+        />
+        <Input
+          name="password"
+          type="password"
+          onChange={(e) => setPassword(e.target.value)}
+          label="Password"
+        />
+        <Input
+          name="password"
+          type="password"
+          onChange={(e) => setPasswordConfirmation(e.target.value)}
+          label="Password Confirmation"
+        />
+        {errorMsg ?? <p>{errorMsg}</p>}
+        <button type="submit" onClick={handleClick}>
+          Signup
+        </button>
+      </form>
       <span>
         Have account? <Link to="/login">Sign In</Link>
       </span>
-    </form>
+    </section>
   )
 }
