@@ -30,7 +30,12 @@ export class AddAccountUseCase {
 
     const token = this.tokenAuth.generate(accountData)
     const createdAccount = await this.repository.create(accountData)
+    const userDTO = {
+      name: createdAccount.name,
+      email: createdAccount.email,
+      token
+    }
 
-    return { ...createdAccount, token }
+    return userDTO
   }
 }
