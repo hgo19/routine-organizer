@@ -150,7 +150,6 @@ describe('Authentication use case', () => {
     expect(response).toEqual({
       name: 'valid_name',
       email: 'valid@email.com',
-      password: 'hashed_password',
       token: 'generated_token'
     })
   })
