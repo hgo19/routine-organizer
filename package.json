@@ -11,9 +11,5 @@
   "license": "ISC",
   "devDependencies": {
     "git-commit-msg-linter": "^5.0.4"
-  },
-  "dependencies": {
-    "bcrypt": "^5.1.0",
-    "jsonwebtoken": "^9.0.1"
   }
 }
