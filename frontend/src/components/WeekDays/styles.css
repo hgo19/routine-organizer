@@ -1,0 +1,14 @@
+.weekDay-container {
+  display: flex;
+  gap: 5px;
+  margin-top: 20px;
+}
+
+.weekDay-card {
+  border: 1px solid #122207;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 2rem;
+  text-align: center;
+  width: 50px;
+}
