@@ -1,0 +1,23 @@
+.header-container {
+  align-items: center;
+  background-color: #3a5b22;
+  color: white;
+  display: flex;
+  height: 60px;
+  justify-content: flex-end;
+}
+
+.nav-container {
+  display: flex;
+  gap: 20px;
+  list-style: none;
+  padding-right: 30px;
+}
+
+.nav-container a {
+  color: white;
+}
+
+.nav-container a:hover {
+  opacity: 0.7;
+}
