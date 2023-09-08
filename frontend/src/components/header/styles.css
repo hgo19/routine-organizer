@@ -1,7 +1,7 @@
 .header-container {
   align-items: center;
-  background-color: #3a5b22;
-  color: white;
+  background-color: white;
+  color: #3a5b22;
   display: flex;
   height: 60px;
   justify-content: flex-end;
@@ -15,7 +15,7 @@
 }
 
 .nav-container a {
-  color: white;
+  color: #3a5b22;
 }
 
 .nav-container a:hover {
