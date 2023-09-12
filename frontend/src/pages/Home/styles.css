@@ -1,5 +1,7 @@
 .main-container {
+  background-color: #f9fafc;
   display: flex;
   gap: 10%;
   justify-content: space-evenly;
+  margin-top: 50px;
 }
