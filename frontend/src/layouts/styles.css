@@ -1,0 +1,13 @@
+.layout-content {
+  background-color: #3a5b22;
+  display: grid;
+  grid-template-columns: 300px 1fr;
+}
+
+.outlet-container {
+  background-color: white;
+  border-radius: 10px;
+  /* height: 97%; */
+  margin: 20px;
+  /* width: 97%; */
+}

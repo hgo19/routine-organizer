@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import './styles.css'
 
-export default function Header() {
+export default function SideBar() {
   return (
     <header className="header-container">
       <nav className="nav-container">

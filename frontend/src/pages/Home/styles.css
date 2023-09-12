@@ -1,5 +1,5 @@
 .main-container {
   display: flex;
   gap: 10%;
-  justify-content: center;
+  justify-content: space-evenly;
 }
